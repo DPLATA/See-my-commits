@@ -6,6 +6,8 @@
       <ul>
           <li v-for="(fruit, index) in fruits" v-bind:key="index">{{index}}, {{fruit}}</li>
       </ul>
+      <button v-on:click="get_github_api">Github zen</button>
+      <div v-if="zen_message_available">{{zen_message}}</div>
   </div>
 </template>
 
@@ -20,8 +22,22 @@ export default defineComponent({
   },
   data() {
       return {
-          fruits: ['apple', 'banana', 'orange', 'grapes']
+          fruits: ['apple', 'banana', 'orange', 'grapes'],
+          zen_message: null,
+          zen_message_available: false
       }
+  },
+  methods: {
+    async get_github_api() {
+      await this.axios.get('/zen')
+      .then(response => {
+          this.zen_message_available = true
+          this.zen_message = response.data
+          console.log(response)
+      }).catch(error => {
+        var data = error.response.data
+      });
+    }
   }
 });
 </script>
